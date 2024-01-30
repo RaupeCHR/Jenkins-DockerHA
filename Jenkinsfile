@@ -4,25 +4,39 @@ pipeline {
             label 'docker-agent-python'
         }
     }
+    environment {
+        APP_REQUIREMENTS = 'myapp/requirements.txt'
+        APP_TESTS = 'myapp/tests.py'
+        APP_MAIN = 'myapp/main.py'
+        GIT_BRANCH = 'main' // Hier kannst du den Branch-Namen ändern
+    }
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/RaupeCHR/Jenkins-DockerHA.git'
+                script {
+                    git branch: "${env.GIT_BRANCH}", url: 'https://github.com/RaupeCHR/Jenkins-DockerHA.git'
+                }
             }
         }
         stage('Build') {
             steps {
-                sh 'pip install -r myapp/requirements.txt'
+                script {
+                    sh "pip install -r ${env.APP_REQUIREMENTS}"
+                }
             }
         }
         stage('Test') {
             steps {
-                sh 'python3 myapp/tests.py'
+                script {
+                    sh "python3 ${env.APP_TESTS}"
+                }
             }
         }
         stage('Run') {
             steps {
-                sh 'python3 myapp/main.py'
+                script {
+                    sh "python3 ${env.APP_MAIN}"
+                }
             }
         }
     }
