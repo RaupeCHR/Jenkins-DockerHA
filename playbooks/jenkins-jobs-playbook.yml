@@ -1,0 +1,21 @@
+- name: Konfiguriere Jenkins-Jobs
+  hosts: jenkins_master
+  tasks:
+    - name: Installiere benötigte Jenkins-Plugins
+      jenkins_plugin:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - git
+        # Weitere erforderliche Plugins hier hinzufügen
+
+    - name: Lade Jenkins-Konfiguration hoch
+      jenkins_job:
+        config: "{{ lookup('file', '/path/to/job_config.xml') }}"
+        name: Build_Job
+        state: present
+
+    - name: Konfiguriere GitHub-Trigger
+      jenkins_job_trigger:
+        job: Build_Job
+        trigger: github

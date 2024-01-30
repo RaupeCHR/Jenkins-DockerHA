@@ -1,0 +1,12 @@
+- hosts: jenkins_master
+  become: true
+  pre_tasks:
+    - name: Update apt
+      ansible.builtin.apt:
+        update_cache: yes
+  roles:
+    - role: geerlingguy.java
+      when: "ansible_os_family == 'Debian'"
+      java_packages:
+        - openjdk-17-jre
+    - role: geerlingguy.jenkins
